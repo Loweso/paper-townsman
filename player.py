@@ -1,6 +1,7 @@
 import pygame
 import os
 from settings import *
+from bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
     import os
@@ -33,6 +34,10 @@ class Player(pygame.sprite.Sprite):
         self.speed = 5
 
         self.obstacle_sprites = obstacle_sprites
+        
+        self.shoot = False
+        self.shoot_cooldown = 0
+        self.gun_barrel_offset = pygame.math.Vector2(GUN_OFFSET_X,GUN_OFFSET_Y)
         self.last_direction = 'down'  # for idle animation
 
     def load_animations(self):
@@ -53,6 +58,7 @@ class Player(pygame.sprite.Sprite):
 
     def input(self):
         keys = pygame.key.get_pressed()
+    
 
         if keys[pygame.K_UP]:
             self.direction.y = -1
@@ -88,6 +94,8 @@ class Player(pygame.sprite.Sprite):
             self.image = self.animations[self.last_direction][0]
 
 
+
+
     def collision (self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
@@ -104,6 +112,12 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
+                        
+    def is_shooting(self):
+        if self.shoot_cooldown == 0:
+            self.shoot_cooldown = SHOOT_COOLDOWN
+            spawn_bullet_pos = self.pos + self.gun_barrel_offset.rotate(self.angle)
+            self.bullet = Bullet(spawn_bullet_pos[0],spawn_bullet_pos[1],self.angle)
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -115,6 +129,8 @@ class Player(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center
 
+
+
     def update(self, *args, **kwargs):
         dialogue_mode = kwargs.get('dialogue_mode', False)
 
@@ -125,5 +141,9 @@ class Player(pygame.sprite.Sprite):
             # Stop movement during dialogue
             self.direction.x = 0
             self.direction.y = 0
+        if self.shoot_cooldown > 0:
+            self.shoot_cooldown -= 1
+ 
+        
 
         self.animate()

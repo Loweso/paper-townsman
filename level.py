@@ -6,16 +6,18 @@ from npc import NPC
 
 import pytmx
 from pytmx.util_pygame import load_pygame
+from enemy import Enemy
 
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
-
+        self.world_map = WORLD_MAP
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.camera_group = self.visible_sprites
         self.dialogue_active = False
-
+        self.enemies = pygame.sprite.Group()
+        self.door_sprites = pygame.sprite.Group()
         self.tmx_data = load_pygame('assets/home.tmx')
         self.create_map()
 
@@ -131,6 +133,7 @@ class Level:
                     if sprite.dialogue_index >= len(sprite.dialogue):
                         sprite.is_talking = False
                         self.dialogue_active = False
+        self.check_door_transition()
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
