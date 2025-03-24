@@ -1,5 +1,6 @@
 import pygame
 from settings import *
+from bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
@@ -12,9 +13,14 @@ class Player(pygame.sprite.Sprite):
         self.speed = 5
 
         self.obstacle_sprites = obstacle_sprites
+        
+        self.shoot = False
+        self.shoot_cooldown = 0
+        self.gun_barrel_offset = pygame.math.Vector2(GUN_OFFSET_X,GUN_OFFSET_Y)
 
     def input(self):
         keys = pygame.key.get_pressed()
+    
 
         if keys[pygame.K_UP]:
             self.direction.y = -1
@@ -29,6 +35,8 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 1
         else:
             self.direction.x = 0
+
+
 
     def collision (self, direction):
         if direction == 'horizontal':
@@ -46,6 +54,12 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
+                        
+    def is_shooting(self):
+        if self.shoot_cooldown == 0:
+            self.shoot_cooldown = SHOOT_COOLDOWN
+            spawn_bullet_pos = self.pos + self.gun_barrel_offset.rotate(self.angle)
+            self.bullet = Bullet(spawn_bullet_pos[0],spawn_bullet_pos[1],self.angle)
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -57,7 +71,13 @@ class Player(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center
 
+
+
     def update(self):
         self.input()
         self.move(self.speed)
+        if self.shoot_cooldown > 0:
+            self.shoot_cooldown -= 1
+ 
+        
         
