@@ -4,7 +4,7 @@ from settings import *
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites, player):
         super().__init__(groups)
-        original_image = pygame.image.load('assets/rock.png').convert_alpha()
+        original_image = pygame.image.load('assets/rock (Small).png').convert_alpha()
         self.image = pygame.transform.scale(original_image, (TILESIZE, TILESIZE)) 
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)

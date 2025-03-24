@@ -9,19 +9,26 @@ from pytmx.util_pygame import load_pygame
 from enemy import Enemy
 
 class Level:
-    def __init__(self):
+    def __init__(self, map_path='assets/home.tmx'):
         self.display_surface = pygame.display.get_surface()
-        self.world_map = WORLD_MAP
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.camera_group = self.visible_sprites
         self.dialogue_active = False
         self.enemies = pygame.sprite.Group()
         self.door_sprites = pygame.sprite.Group()
-        self.tmx_data = load_pygame('assets/home.tmx')
+        
+        # Pass map path
+        self.map_path = map_path
+        self.tmx_data = load_pygame(self.map_path)
         self.create_map()
 
     def create_map(self):
+        self.visible_sprites.empty()
+        self.obstacle_sprites.empty()
+        self.enemies.empty()
+        self.door_sprites.empty()
+
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
@@ -42,10 +49,19 @@ class Level:
 
             if obj.name == 'Player':
                 self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites)
+
             elif obj.name == 'NPC':
                 dialogue = obj.properties.get('dialogue', "bitch im a cube lmao")
                 dialogue_lines = dialogue.split('|')
                 NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, color='pink', dialogue=dialogue_lines)
+
+            elif obj.name == 'Enemy':
+                Enemy(pos, [self.visible_sprites], self.obstacle_sprites, self.player)
+
+            elif obj.name == 'Door':
+                destination = obj.properties.get('destination')  # <-- Get the destination map
+                door_sprite = Tile(pos, [self.visible_sprites, self.door_sprites], "assets/rock (Small).png")
+                door_sprite.destination = destination  # Attach destination attribute
 
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
@@ -134,6 +150,19 @@ class Level:
                         sprite.is_talking = False
                         self.dialogue_active = False
         self.check_door_transition()
+
+    def check_door_transition(self):
+        collided_doors = pygame.sprite.spritecollide(self.player, self.door_sprites, False)
+        for door in collided_doors:
+            if hasattr(door, 'destination') and door.destination:
+                print(f"Transitioning to {door.destination}")
+                self.load_new_world(door.destination)
+
+    def load_new_world(self, map_path):
+        self.map_path = map_path
+        self.tmx_data = load_pygame(self.map_path)
+        self.create_map()
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
