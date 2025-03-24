@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="20">
+ <tileset firstgid="1" source="../../testTileset.tsx"/>
+ <tileset firstgid="7001" source="testTileset2.tsx"/>
+ <tileset firstgid="7217" source="tileset3.tsx"/>
+ <imagelayer id="4" name="Background">
+  <image source="testMap2.png" width="512" height="512"/>
+ </imagelayer>
+ <objectgroup id="7" name="Object">
+  <object id="1" name="Player" x="55" y="335"/>
+  <object id="2" name="NPC" x="81" y="130"/>
+ </objectgroup>
+</map>
