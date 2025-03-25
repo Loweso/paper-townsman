@@ -93,9 +93,6 @@ class Player(pygame.sprite.Sprite):
             # Idle
             self.image = self.animations[self.last_direction][0]
 
-
-
-
     def collision (self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
@@ -119,31 +116,36 @@ class Player(pygame.sprite.Sprite):
             spawn_bullet_pos = self.pos + self.gun_barrel_offset.rotate(self.angle)
             self.bullet = Bullet(spawn_bullet_pos[0],spawn_bullet_pos[1],self.angle)
 
-    def move(self, speed):
+    def move(self, speed, x_min, x_max, y_min, y_max):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
 
         self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
+
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
+
+        self.hitbox.x = max(x_min, min(self.hitbox.x, x_max - self.rect.width))
+        self.hitbox.y = max(y_min, min(self.hitbox.y, y_max - self.rect.height))
+
         self.rect.center = self.hitbox.center
-
-
 
     def update(self, *args, **kwargs):
         dialogue_mode = kwargs.get('dialogue_mode', False)
+        x_min = kwargs.get('x_min', 0)
+        x_max = kwargs.get('x_max', 1000)  # Default values if not provided
+        y_min = kwargs.get('y_min', 0)
+        y_max = kwargs.get('y_max', 1000)
 
         if not dialogue_mode:
             self.input()
-            self.move(self.speed)
+            self.move(self.speed, x_min, x_max, y_min, y_max)
         else:
-            # Stop movement during dialogue
             self.direction.x = 0
             self.direction.y = 0
+
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
- 
-        
 
         self.animate()

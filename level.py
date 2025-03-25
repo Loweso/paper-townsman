@@ -3,13 +3,14 @@ from settings import *
 from tile import Tile
 from player import Player
 from npc import NPC
+from obstacle import Obstacle
 
 import pytmx
 from pytmx.util_pygame import load_pygame
 from enemy import Enemy
 
 class Level:
-    def __init__(self, map_path='assets/home.tmx'):
+    def __init__(self, map_path='assets/map_data/home.tmx'):
         self.display_surface = pygame.display.get_surface()
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
@@ -17,11 +18,13 @@ class Level:
         self.dialogue_active = False
         self.enemies = pygame.sprite.Group()
         self.door_sprites = pygame.sprite.Group()
-        
-        # Pass map path
+
         self.map_path = map_path
         self.tmx_data = load_pygame(self.map_path)
+
+        self.x_min, self.y_min, self.x_max, self.y_max = 13, 106, 499, 486
         self.create_map()
+
 
     def create_map(self):
         self.visible_sprites.empty()
@@ -29,39 +32,35 @@ class Level:
         self.enemies.empty()
         self.door_sprites.empty()
 
-        for layer in self.tmx_data.visible_layers:
-            if isinstance(layer, pytmx.TiledTileLayer):
-                for x, y, gid in layer:
-                    tile_image = self.tmx_data.get_tile_image_by_gid(gid)
-                    if tile_image:
-                        pos = (x * self.tmx_data.tilewidth, y * self.tmx_data.tileheight)
-                        Tile(pos, [self.visible_sprites])
-                        
-                        tile_props = self.tmx_data.get_tile_properties_by_gid(gid)
-                        if tile_props and tile_props.get('collision') == True:
-                            Tile(pos, [self.visible_sprites, self.obstacle_sprites])
+        for layer in self.tmx_data.objectgroups:
+            if layer.name == "Obstacles":
+                for obj in layer:
+                    pos = (obj.x, obj.y)
+                    Obstacle(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name)
 
         for obj in self.tmx_data.objects:
             pos = (obj.x, obj.y)
+            if obj.name == 'Door':
+                destination = obj.properties.get('destination')
+                door_sprite = Tile(pos, [self.visible_sprites, self.door_sprites], "assets/obstacles/Entrance Exit.png")
+                door_sprite.image.fill((0, 0, 0, 0))
+                door_sprite.destination = destination
 
-            if obj.properties.get('collision') == True:
-                Tile(pos, [self.visible_sprites, self.obstacle_sprites])
+                door_sprite.x_min = int(obj.properties.get('x_min', self.x_min))
+                door_sprite.y_min = int(obj.properties.get('y_min', self.y_min))
+                door_sprite.x_max = int(obj.properties.get('x_max', self.x_max))
+                door_sprite.y_max = int(obj.properties.get('y_max', self.y_max))
 
-            if obj.name == 'Player':
+            elif obj.name == 'Player':
                 self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites)
 
             elif obj.name == 'NPC':
-                dialogue = obj.properties.get('dialogue', "bitch im a cube lmao")
+                dialogue = obj.properties.get('dialogue', "bitch im a cube lmao|now shoo hoe you stink like ass")
                 dialogue_lines = dialogue.split('|')
                 NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, color='pink', dialogue=dialogue_lines)
 
             elif obj.name == 'Enemy':
                 Enemy(pos, [self.visible_sprites], self.obstacle_sprites, self.player)
-
-            elif obj.name == 'Door':
-                destination = obj.properties.get('destination')  # <-- Get the destination map
-                door_sprite = Tile(pos, [self.visible_sprites, self.door_sprites], "assets/rock (Small).png")
-                door_sprite.destination = destination  # Attach destination attribute
 
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
@@ -79,7 +78,7 @@ class Level:
         for sprite in self.visible_sprites:
             if hasattr(sprite, 'update'):
                 if isinstance(sprite, Player):
-                    sprite.update(dialogue_mode=self.dialogue_active)
+                    sprite.update(dialogue_mode=self.dialogue_active, x_min=self.x_min, x_max=self.x_max, y_min=self.y_min, y_max=self.y_max)
                 else:
                     sprite.update()
 
@@ -156,7 +155,11 @@ class Level:
         for door in collided_doors:
             if hasattr(door, 'destination') and door.destination:
                 print(f"Transitioning to {door.destination}")
+
                 self.load_new_world(door.destination)
+
+                self.x_min, self.y_min = door.x_min, door.y_min
+                self.x_max, self.y_max = door.x_max, door.y_max
 
     def load_new_world(self, map_path):
         self.map_path = map_path

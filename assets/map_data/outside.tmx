@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="6">
+ <imagelayer id="2" name="outside">
+  <image source="../maps/outside.png" width="1024" height="1024"/>
+ </imagelayer>
+ <objectgroup id="4" name="Object">
+  <object id="1" name="Player" x="238.91" y="182.33"/>
+  <object id="2" name="Enemy" x="363.208" y="246.982"/>
+  <object id="4" name="Door" x="194.82" y="157.516" width="92" height="43.3333">
+   <properties>
+    <property name="destination" value="assets/map_data/home.tmx"/>
+    <property name="x_max" type="int" value="499"/>
+    <property name="x_min" type="int" value="13"/>
+    <property name="y_max" type="int" value="486"/>
+    <property name="y_min" type="int" value="106"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
