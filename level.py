@@ -10,7 +10,8 @@ class Level:
         self.world_map = WORLD_MAP
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-        self.enemies = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
         self.door_sprites = pygame.sprite.Group()
         self.create_map()
 
@@ -19,19 +20,20 @@ class Level:
             for col_index, col in enumerate(row):
                 x = col_index * TILESIZE
                 y = row_index * TILESIZE
+                
                 if col == 'x':
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites],"assets/rock (Small).png")
                 if col == 'p':
-                    self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
+                    self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites,self.bullet_sprites,self.enemy_sprites)
                 if col == 'e':
-                    Enemy((x, y), [self.visible_sprites], self.obstacle_sprites, self.player)
+                    Enemy((x, y), [self.visible_sprites,self.enemy_sprites], self.obstacle_sprites, self.player,self.bullet_sprites)
                 if col == 'd':
                     Tile((x, y), [self.visible_sprites, self.door_sprites],"assets/rock (Small).png")
     
     def load_new_world(self):
         self.visible_sprites.empty()
         self.obstacle_sprites.empty()
-        self.enemies.empty()
+        self.enemy_sprites.empty()
         self.door_sprites.empty()
 
         if self.world == "outside":
