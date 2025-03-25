@@ -166,7 +166,6 @@ class Level:
         self.tmx_data = load_pygame(self.map_path)
         self.create_map()
 
-
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()

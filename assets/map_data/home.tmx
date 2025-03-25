@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="35">
  <tileset firstgid="1" source="Decoration.tsx"/>
+ <tileset firstgid="7001" source="More Decor.tsx"/>
  <imagelayer id="4" name="Background">
   <image source="../maps/home.png" width="512" height="512"/>
  </imagelayer>
@@ -29,7 +30,7 @@
  </objectgroup>
  <layer id="18" name="Decoration" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFZAHOgXbAKBgFlAMAHP8ACg==
+   eJxjYBgFZAFO+lqnKENf+6gBBrObeShwG8hfIoPYb6QAAI7qARk=
   </data>
  </layer>
 </map>
