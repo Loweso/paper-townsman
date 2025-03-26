@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
         
         self.enemy_sprites = enemy_sprites
     
-        self.health = PLAYER_HEALTH
+        self.health = 100
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
