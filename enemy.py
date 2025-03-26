@@ -3,7 +3,7 @@ import os
 from settings import *
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites, player, bullet_sprites):
+    def __init__(self, pos, groups, obstacle_sprites, player, bullet_sprites, enemyID):
         super().__init__(groups)
 
         # Load animation frames
@@ -24,6 +24,8 @@ class Enemy(pygame.sprite.Sprite):
         self.detection_radius = 200  
         self.direction = pygame.math.Vector2()
         self.health = ENEMY_HEALTH
+
+        self.enemyID = enemyID
 
     def load_images(self, folder):
         self.frames = []
@@ -68,8 +70,10 @@ class Enemy(pygame.sprite.Sprite):
                 bullet.kill()
 
                 if self.health <= 0:
-                    self.kill() 
-    
+                    if hasattr(self.player, "level"):  # Check if player has a reference to Level
+                        self.player.level.register_enemy_death(self.enemyID)
+                    self.kill()
+
     def collision(self, direction):
         for sprite in self.obstacle_sprites:
             if sprite.hitbox.colliderect(self.hitbox):
