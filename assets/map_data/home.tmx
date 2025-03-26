@@ -20,8 +20,7 @@
   <object id="1" name="Player" x="305" y="475"/>
   <object id="2" name="NPC" x="81" y="130">
    <properties>
-    <property name="asset" value="assets/npcs/mother.png"/>
-    <property name="dialogue" value="Can you call your father, dear?|This food won't cook itself!|I'll give you the old papers to sell later too, dear. Please wait a bit!"/>
+    <property name="character" value="mother"/>
    </properties>
   </object>
  </objectgroup>

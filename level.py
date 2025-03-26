@@ -8,6 +8,7 @@ from obstacle import Obstacle
 import pytmx
 from pytmx.util_pygame import load_pygame
 from enemy import Enemy
+from npc_details import NPC_DETAILS
 
 class Level:
     def __init__(self,player_health=100, map_path='assets/map_data/home.tmx'):
@@ -60,10 +61,10 @@ class Level:
                 self.player.health = self.player_health
                 
             elif obj.name == 'NPC':
-                dialogue = obj.properties.get('dialogue')
-                asset = obj.properties.get('asset')
-                dialogue_lines = dialogue.split('|')
-                NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, image_path=asset, dialogue=dialogue_lines)
+                character = obj.properties.get('character')
+                npc_data = NPC_DETAILS.get(character, {"asset": "", "dialogue": ["Hello there!"]})
+
+                NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, image_path=npc_data["asset"], dialogue=npc_data["dialogue"])
 
             elif obj.name == 'Enemy':
                 Enemy(pos, [self.visible_sprites,self.enemy_sprites], self.obstacle_sprites, self.player,self.bullet_sprites)
@@ -96,10 +97,29 @@ class Level:
             if isinstance(sprite, NPC):
                 if self.player.rect.colliderect(sprite.rect):
                     sprite.can_talk = True
+                    if (
+                        len(self.enemy_sprites) == 0
+                        and self.map_path == "assets/map_data/outside.tmx"
+                        and getattr(sprite, "image_path", None) in ["assets/npcs/mother.png", "assets/npcs/old-man.png"]
+                    ):
+                        if sprite.image_path == "assets/npcs/mother.png":
+                            sprite.dialogue = [
+                                "What were you doing outside? Our meal is done.",
+                                "Your... father...?",
+                                "Are you okay, dear?",
+                                "I don't know who your father is, but I don't wanna know, ok?",
+                                "So let's just eat. My cooking's getting cold."
+                            ]
+                        elif sprite.image_path == "assets/npcs/old-man.png":
+                            sprite.dialogue = [
+                                "Well, good job cleaning those things up, kiddo.",
+                                "...Hm? Have I seen your father?",
+                                "Never heard of your father before today.",
+                                "Did he visit?"
+                            ]
                 else:
                     sprite.can_talk = False
                     sprite.is_talking = False
-
 
     def display_dialogue(self):
         font = pygame.font.SysFont(None, 24)
