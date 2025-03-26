@@ -11,7 +11,7 @@ from enemy import Enemy
 from npc_details import NPC_DETAILS
 
 class Level:
-    def __init__(self, map_path='assets/map_data/home.tmx'):
+    def __init__(self,player_health=100, map_path='assets/map_data/home.tmx'):
         self.display_surface = pygame.display.get_surface()
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
@@ -20,6 +20,8 @@ class Level:
         self.enemy_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
         self.door_sprites = pygame.sprite.Group()
+        
+        self.player_health = player_health  # Store health
 
         self.map_path = map_path
         self.tmx_data = load_pygame(self.map_path)
@@ -56,7 +58,8 @@ class Level:
 
             elif obj.name == 'Player':
                 self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites,self.bullet_sprites,self.enemy_sprites)
-
+                self.player.health = self.player_health
+                
             elif obj.name == 'NPC':
                 character = obj.properties.get('character')
                 npc_data = NPC_DETAILS.get(character, {"asset": "", "dialogue": ["Hello there!"]})
@@ -187,7 +190,14 @@ class Level:
     def load_new_world(self, map_path):
         self.map_path = map_path
         self.tmx_data = load_pygame(self.map_path)
-        self.create_map()
+        
+        previous_health = self.player.health if hasattr(self, 'player') else 100  # Save health before reloading
+
+        self.create_map()  # This should create self.player
+
+        if hasattr(self, 'player'):
+            self.player.health = previous_health  # Restore health after creating player
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
