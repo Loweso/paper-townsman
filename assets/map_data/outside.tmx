@@ -20,8 +20,7 @@
   <object id="11" name="Enemy" x="1245" y="1090.33"/>
   <object id="70" name="NPC" x="1415.67" y="834.667">
    <properties>
-    <property name="asset" value="assets/npcs/old-man.png"/>
-    <property name="dialogue" value="What are those things?|They look like TV static, and they seem very aggressive.|Can you make clean work of them with your slingshot, please, boy?"/>
+    <property name="character" value="old-man"/>
    </properties>
   </object>
   <object id="105" name="Enemy" x="1080" y="1305.33"/>

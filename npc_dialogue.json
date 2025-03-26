@@ -1,0 +1,19 @@
+{
+    "mother": {
+        "asset": "assets/npcs/mother.png",
+        "dialogue": [
+            "Can you call your father, dear?",
+            "This food won't cook itself!",
+            "I'll give you the old papers to sell later too, dear. Please wait a bit!"
+        ]
+    },
+    "old-man": {
+        "asset": "assets/npcs/old-man.png",
+        "dialogue": [
+            "Well, good job cleaning those things up, kiddo.",
+            "...Hm? Have I seen your father?",
+            "Never heard of your father before today.",
+            "Did he visit?"
+        ]
+    }
+}

@@ -5,6 +5,7 @@ class NPC(pygame.sprite.Sprite):
     def __init__(self, pos, groups, name="NPC", image_path="", dialogue=None):
         super().__init__(groups)
         self.name = name
+        self.image_path = image_path
         self.dialogue = dialogue or ["Hello there!"]
         self.dialogue_index = 0
 
