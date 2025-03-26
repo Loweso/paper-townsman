@@ -18,6 +18,10 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.level.check_dialogue_trigger()
+
             self.screen.fill('black')
             self.level.run()
             pygame.display.update()

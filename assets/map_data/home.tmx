@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="35">
+ <tileset firstgid="1" source="Decoration.tsx"/>
+ <tileset firstgid="7001" source="More Decor.tsx"/>
+ <imagelayer id="4" name="Background">
+  <image source="../maps/home.png" width="512" height="512"/>
+ </imagelayer>
+ <objectgroup id="17" name="Door">
+  <object id="34" name="Door" x="279.31" y="452.64" width="92" height="43.3333">
+   <properties>
+    <property name="destination" value="assets/map_data/outside.tmx"/>
+    <property name="x_max" type="int" value="1980"/>
+    <property name="x_min" type="int" value="0"/>
+    <property name="y_max" type="int" value="1656"/>
+    <property name="y_min" type="int" value="106"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="Object">
+  <object id="1" name="Player" x="305" y="475"/>
+  <object id="2" name="NPC" x="81" y="130">
+   <properties>
+    <property name="asset" value="assets/npcs/mother.png"/>
+    <property name="dialogue" value="Can you call your father, dear?|This food won't cook itself!|I'll give you the old papers to sell later too, dear. Please wait a bit!"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="16" name="Obstacles">
+  <object id="23" name="KitchenCounter" x="28.5" y="182.5" width="123" height="91.5"/>
+  <object id="28" name="Refrigerator" x="182.5" y="57.6829" width="56.8219" height="121.392"/>
+  <object id="29" name="TV" x="253.78" y="150.55" width="65.54" height="51.6563"/>
+  <object id="30" name="Stove" x="30.9938" y="78.24" width="96.4251" height="56.8219"/>
+  <object id="31" name="Sala Set" x="69.54" y="306.96" width="154.108" height="92.1204"/>
+  <object id="33" name="Book Shelf" x="331.04" y="54.2391" width="135.167" height="92.9813"/>
+ </objectgroup>
+ <layer id="18" name="Decoration" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFZAFO+lqnKENf+6gBBrObeShwG8hfIkj6KTELBEQGMJwAw1IBcQ==
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="54">
+ <imagelayer id="2" name="outside">
+  <image source="../maps/outside.png" width="2000" height="2000"/>
+ </imagelayer>
+ <objectgroup id="4" name="Object">
+  <object id="4" name="Door" x="505.82" y="290.52" width="202" height="105.33">
+   <properties>
+    <property name="destination" value="assets/map_data/home.tmx"/>
+    <property name="x_max" type="int" value="499"/>
+    <property name="x_min" type="int" value="13"/>
+    <property name="y_max" type="int" value="486"/>
+    <property name="y_min" type="int" value="106"/>
+   </properties>
+  </object>
+  <object id="7" name="Player" x="514.667" y="307.33"/>
+  <object id="8" name="Enemy" x="1452" y="1110.67"/>
+  <object id="11" name="Enemy" x="1342" y="1159.33"/>
+  <object id="12" name="Enemy" x="1597.33" y="1286"/>
+ </objectgroup>
+ <objectgroup id="5" name="Obstacles">
+  <object id="18" name="Garbage 1" x="583.758" y="752.121" width="50.6667" height="53.3333"/>
+  <object id="19" name="Garbage 1" x="766.667" y="896.97" width="60.6061" height="66.6667"/>
+  <object id="20" name="Garbage 2" x="815.152" y="948.485" width="63.6364" height="63.6364"/>
+  <object id="21" name="Garbage 2" x="1018.18" y="1112.12" width="54.5455" height="57.5758"/>
+  <object id="22" name="Garbage 2" x="524.242" y="787.879" width="48.4848" height="57.5758"/>
+  <object id="23" name="Garbage 1" x="378.788" y="581.818" width="69.697" height="75.7576"/>
+  <object id="24" name="Garbage 1" x="1096" y="1037.33" width="68" height="66.6667"/>
+  <object id="25" name="Garbage 2" x="562.667" y="809.333" width="61.3333" height="66.6667"/>
+  <object id="26" name="Garbage 1" x="454.667" y="770.667" width="66.6667" height="68"/>
+  <object id="27" name="Garbage 1" x="217.67" y="1249.33" width="74.6667" height="74.6667"/>
+  <object id="28" name="Garbage 2" x="1052" y="1462.67" width="60" height="58.6667"/>
+  <object id="29" name="Garbage 2" x="1006.67" y="1501.33" width="58.6667" height="57.3333"/>
+  <object id="30" name="Garbage 1" x="436.67" y="1367.67" width="69.3333" height="68"/>
+  <object id="33" name="House" x="407.33" y="110.67" width="278.667" height="156"/>
+  <object id="34" name="Garbage 2" x="387.33" y="259.67" width="69.3333" height="62.6667"/>
+  <object id="35" name="Garbage 1" x="330.33" y="322.667" width="70.6667" height="70.6667"/>
+  <object id="36" name="Garbage 1" x="774.667" y="253.333" width="65.3333" height="66.6667"/>
+  <object id="39" name="Garbage Pile" x="678.667" y="228" width="96" height="58.6667"/>
+  <object id="41" name="Garbage Pile" x="1.33333" y="364" width="86.6667" height="76"/>
+  <object id="42" name="Garbage Pile" x="400" y="674.667" width="96" height="64"/>
+  <object id="44" name="Garbage Pile" x="792" y="1014.67" width="102.667" height="68"/>
+  <object id="45" name="Garbage Pile" x="294.667" y="1333.33" width="113.333" height="70.6667"/>
+  <object id="46" name="Garbage Pile" x="698.667" y="552" width="117.333" height="69.3333"/>
+  <object id="47" name="Garbage Pile" x="414.667" y="1078.67" width="116" height="69.3333"/>
+  <object id="48" name="Garbage Pile" x="956.67" y="1522.67" width="105.333" height="56"/>
+  <object id="49" name="Garbage Pile" x="1050.67" y="1104" width="86.6667" height="48"/>
+  <object id="51" name="Garbage Pile 2" x="317.33" y="261.33" width="101.333" height="48"/>
+  <object id="52" name="Crumpled Paper" x="608" y="228.33"/>
+  <object id="53" name="Banana Peel" x="904" y="442.667"/>
+ </objectgroup>
+</map>
