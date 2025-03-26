@@ -45,6 +45,8 @@ class Player(pygame.sprite.Sprite):
         self.shoot_cooldown = 0
         self.gun_barrel_offset = pygame.math.Vector2(GUN_OFFSET_X,GUN_OFFSET_Y)
         self.last_direction = 'down'  # for idle animation
+        
+        self.load_health_assets()
 
     def load_animations(self):
         # Example folder structure: assets/player/down/0.png, 1.png, etc.
@@ -61,7 +63,22 @@ class Player(pygame.sprite.Sprite):
         idle_frame = pygame.image.load('assets/player/idle.png').convert_alpha()
         self.animations['idle'] = [idle_frame]
 
-    
+    def load_health_assets(self):
+        """Load heart images for the health bar."""
+        self.red_heart = pygame.image.load('assets/redheart.png').convert_alpha()
+        self.heart_size = (20, 20)  
+        self.red_heart = pygame.transform.scale(self.red_heart, self.heart_size)
+        
+    def draw_health(self, surface):
+        """Draws only the number of red hearts representing the player's remaining health."""
+        heart_x = 20  # X position (left corner)
+        heart_y = 20  # Y position (top)
+        
+        total_hearts = self.health // 20  # Each heart represents 20 health
+
+        for i in range(total_hearts):
+            surface.blit(self.red_heart, (heart_x + i * (self.heart_size[0] + 5), heart_y))  # 5px spacing between hearts
+
 
     def input(self):
         self.direction.x = 0
@@ -187,3 +204,4 @@ class Player(pygame.sprite.Sprite):
             self.shoot_cooldown -= 1
 
         self.animate()
+        self.draw_health(pygame.display.get_surface()) 
