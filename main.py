@@ -9,7 +9,8 @@ class Game:
         pygame.display.set_caption('Paper Townsman')
         self.clock = pygame.time.Clock()
 
-        self.level = Level()
+        self.player_health = 100  
+        self.level = Level(self.player_health) 
 
     def run(self):
         while True:

@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.dll
+*.dylib
+
+# Virtual environments
+venv/
+env/
+*.venv
+*.virtualenv
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Compiled Cython files
+*.c
+*.cpp
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+*.spec
+
+# Docker (if used)
+docker-compose.override.yml
+.env
+
+# Jupyter Notebook checkpoints (if you use Jupyter for debugging)
+.ipynb_checkpoints/
