@@ -16,14 +16,26 @@
    </properties>
   </object>
   <object id="7" name="Player" x="514.667" y="307.33"/>
-  <object id="8" name="Enemy" x="1452" y="1030.67"/>
-  <object id="11" name="Enemy" x="1245" y="1090.33"/>
+  <object id="8" name="Enemy" x="1452" y="1030.67">
+   <properties>
+    <property name="enemyID" type="int" value="1243"/>
+   </properties>
+  </object>
+  <object id="11" name="Enemy" x="1245" y="1090.33">
+   <properties>
+    <property name="enemyID" type="int" value="94027"/>
+   </properties>
+  </object>
   <object id="70" name="NPC" x="1415.67" y="834.667">
    <properties>
     <property name="character" value="old-man"/>
    </properties>
   </object>
-  <object id="105" name="Enemy" x="1080" y="1305.33"/>
+  <object id="105" name="Enemy" x="1080" y="1305.33">
+   <properties>
+    <property name="enemyID" type="int" value="93478"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="5" name="Obstacles">
   <object id="18" name="Garbage 1" x="583.758" y="752.121" width="50.6667" height="53.3333"/>

@@ -27,8 +27,12 @@ class Level:
         self.tmx_data = load_pygame(self.map_path)
 
         self.x_min, self.y_min, self.x_max, self.y_max = 13, 106, 499, 486
-        self.create_map()
 
+        # For plot progression purposes
+        self.npc_dialogue_states = {}
+        self.enemy_states = {}
+
+        self.create_map()
 
     def create_map(self):
         self.visible_sprites.empty()
@@ -59,16 +63,27 @@ class Level:
             elif obj.name == 'Player':
                 self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites,self.bullet_sprites,self.enemy_sprites)
                 self.player.health = self.player_health
+                self.player.level = self
                 
             elif obj.name == 'NPC':
                 character = obj.properties.get('character')
                 npc_data = NPC_DETAILS.get(character, {"asset": "", "dialogue": ["Hello there!"]})
 
-                NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, image_path=npc_data["asset"], dialogue=npc_data["dialogue"])
+                npc = NPC(pos, [self.visible_sprites, self.obstacle_sprites], 
+                        name=obj.name, image_path=npc_data["asset"], 
+                        dialogue=npc_data["dialogue"])
+
+                # Restore modified dialogue if previously changed
+                if character in self.npc_dialogue_states:
+                    npc.dialogue = self.npc_dialogue_states[character]
 
             elif obj.name == 'Enemy':
-                Enemy(pos, [self.visible_sprites,self.enemy_sprites], self.obstacle_sprites, self.player,self.bullet_sprites)
+                enemyID = obj.properties.get('enemyID')
 
+                # Check if enemyID is in self.enemy_states (already defeated)
+                if enemyID not in self.enemy_states:
+                    Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+        
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
             self.player = Player((0, 0), [self.visible_sprites], self.obstacle_sprites)
@@ -102,21 +117,25 @@ class Level:
                         and self.map_path == "assets/map_data/outside.tmx"
                         and getattr(sprite, "image_path", None) in ["assets/npcs/mother.png", "assets/npcs/old-man.png"]
                     ):
-                        if sprite.image_path == "assets/npcs/mother.png":
-                            sprite.dialogue = [
+                        self.npc_dialogue_states["mother"] = [
                                 "What were you doing outside? Our meal is done.",
                                 "Your... father...?",
                                 "Are you okay, dear?",
                                 "I don't know who your father is, but I don't wanna know, ok?",
                                 "So let's just eat. My cooking's getting cold."
                             ]
-                        elif sprite.image_path == "assets/npcs/old-man.png":
-                            sprite.dialogue = [
+                        sprite.dialogue = self.npc_dialogue_states["mother"]
+
+                        if sprite.image_path == "assets/npcs/old-man.png":
+                            self.npc_dialogue_states["old-man"] = [
                                 "Well, good job cleaning those things up, kiddo.",
                                 "...Hm? Have I seen your father?",
                                 "Never heard of your father before today.",
                                 "Did he visit?"
+                                "Ask your mom. Maybe she knows."
                             ]
+                            sprite.dialogue = self.npc_dialogue_states["old-man"]
+
                 else:
                     sprite.can_talk = False
                     sprite.is_talking = False
@@ -187,17 +206,25 @@ class Level:
                 self.x_min, self.y_min = door.x_min, door.y_min
                 self.x_max, self.y_max = door.x_max, door.y_max
 
+    def register_enemy_death(self, enemyID):
+        self.enemy_states[enemyID] = True
+
     def load_new_world(self, map_path):
         self.map_path = map_path
         self.tmx_data = load_pygame(self.map_path)
         
-        previous_health = self.player.health if hasattr(self, 'player') else 100  # Save health before reloading
+        # Save player health
+        previous_health = self.player.health if hasattr(self, 'player') else 100  
 
-        self.create_map()  # This should create self.player
+        # Save modified NPC dialogues
+        for sprite in self.visible_sprites:
+            if isinstance(sprite, NPC):
+                self.npc_dialogue_states[sprite.name] = sprite.dialogue  # Save dialogue state
+
+        self.create_map()  # Reload map and recreate objects
 
         if hasattr(self, 'player'):
-            self.player.health = previous_health  # Restore health after creating player
-
+            self.player.health = previous_health  # Restore health
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
