@@ -17,6 +17,7 @@ class Obstacle(pygame.sprite.Sprite):
             "Garbage Pile 2": "assets/obstacles/Garbage Pile 2.png",
             "Banana Peel": "assets/obstacles/Banana Peel.png",
             "Crumpled Paper": "assets/obstacles/Crumpled Paper.png",
+            "Broken Car": "assets/obstacles/Broken Car.png",
             "House": "assets/obstacles/house (Custom).png",
         }
 
