@@ -1,22 +1,50 @@
 import pygame
+import os
 from settings import *
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites, player):
+    def __init__(self, pos, groups, obstacle_sprites, player, bullet_sprites):
         super().__init__(groups)
-        original_image = pygame.image.load('assets/rock (Small).png').convert_alpha()
-        self.image = pygame.transform.scale(original_image, (TILESIZE, TILESIZE)) 
+
+        # Load animation frames
+        self.load_images("assets/enemy/")
+        self.current_frame = 0
+        self.animation_speed = 0.15  # Adjust speed of animation
+        self.image = self.frames[self.current_frame]  
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -10)
-        self.direction = pygame.math.Vector2()
-        
+
+        # Define hitbox size (smaller than actual image)
+        self.hitbox = pygame.Rect(0, 0, ENEMY_HITBOX_WIDTH, ENEMY_HITBOX_HEIGHT)
+        self.hitbox.center = self.rect.center  # Align hitbox to sprite center
+
         self.player = player
+        self.bullet_sprites = bullet_sprites
         self.obstacle_sprites = obstacle_sprites
-        self.speed = 2  # Adjust speed as needed
-        self.detection_radius = 200  # Enemy moves if the player is within this range
+        self.speed = 2
+        self.detection_radius = 200  
+        self.direction = pygame.math.Vector2()
+        self.health = ENEMY_HEALTH
+
+    def load_images(self, folder):
+        self.frames = []
+        for filename in sorted(os.listdir(folder)):  # Ensure correct frame order
+            if filename.endswith(".png") or filename.endswith(".gif"):  # Add more extensions if needed
+                img_path = os.path.join(folder, filename)
+                img = pygame.image.load(img_path).convert_alpha()
+                img = pygame.transform.scale(img, (ENEMY_SIZE, ENEMY_SIZE))  # Scale to tile size
+                self.frames.append(img)
+
+        if not self.frames:
+            raise ValueError(f"No valid images found in {folder}!")
+
+    def animate(self):
+        self.current_frame += self.animation_speed
+        if self.current_frame >= len(self.frames):
+            self.current_frame = 0  # Loop animation
+
+        self.image = self.frames[int(self.current_frame)]
 
     def move_towards_player(self):
-        """Move towards the player only if within detection radius"""
         distance = pygame.math.Vector2(self.player.rect.center).distance_to(self.rect.center)
         
         if distance <= self.detection_radius:
@@ -30,9 +58,18 @@ class Enemy(pygame.sprite.Sprite):
             self.hitbox.y += self.direction.y * self.speed
             self.collision('vertical')
 
-            self.rect.center = self.hitbox.center  # Ensure rect follows hitbox
+            # Update sprite rect to match hitbox position
+            self.rect.center = self.hitbox.center
 
+    def check_bullet_collision(self):
+        for bullet in self.bullet_sprites:
+            if self.hitbox.colliderect(bullet.rect):
+                self.health -= BULLET_DAMAGE 
+                bullet.kill()
 
+                if self.health <= 0:
+                    self.kill() 
+    
     def collision(self, direction):
         for sprite in self.obstacle_sprites:
             if sprite.hitbox.colliderect(self.hitbox):
@@ -52,4 +89,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.direction.y = 0
 
     def update(self):
+        self.animate()
         self.move_towards_player()
+        self.check_bullet_collision()

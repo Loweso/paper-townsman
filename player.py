@@ -2,13 +2,13 @@ import pygame
 import os
 from settings import *
 from bullet import Bullet
+import math
 
 class Player(pygame.sprite.Sprite):
-    import os
-
-class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(self, pos, groups, obstacle_sprites, bullet_sprites, enemy_sprites):
         super().__init__(groups)
+        
+        self.pos = pygame.math.Vector2(pos)
 
         # Animations dictionary
         self.animations = {
@@ -27,13 +27,19 @@ class Player(pygame.sprite.Sprite):
         self.frame_index = 0
         self.animation_speed = 0.15
         self.image = self.animations[self.status][self.frame_index]
-        self.rect = self.image.get_rect(topleft=pos)
+        self.rect = self.image.get_rect(topleft = self.pos)
         self.hitbox = self.rect.inflate(0, -26)
+        
+        self.enemy_sprites = enemy_sprites
+    
+        self.health = PLAYER_HEALTH
 
         self.direction = pygame.math.Vector2()
         self.speed = 5
 
         self.obstacle_sprites = obstacle_sprites
+        self.bullet_sprites = bullet_sprites
+        self.visible_sprites = groups[0]
         
         self.shoot = False
         self.shoot_cooldown = 0
@@ -55,29 +61,51 @@ class Player(pygame.sprite.Sprite):
         idle_frame = pygame.image.load('assets/player/idle.png').convert_alpha()
         self.animations['idle'] = [idle_frame]
 
+    
 
     def input(self):
+        self.direction.x = 0
+        self.direction.y = 0
         keys = pygame.key.get_pressed()
     
 
         if keys[pygame.K_UP]:
-            self.direction.y = -1
+            self.direction.y = -self.speed
             self.status = 'up'
         elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
+            self.direction.y = self.speed
             self.status = 'down'
         else:
             self.direction.y = 0
 
         if keys[pygame.K_LEFT]:
-            self.direction.x = -1
+            self.direction.x = -self.speed
             self.status = 'left'
-        elif keys[pygame.K_RIGHT]:
-            self.direction.x = 1
+        if keys[pygame.K_RIGHT]:
+            self.direction.x = self.speed
+        
+        if self.direction.x != 0 and self.direction.y != 0:
+            self.direction.x /= math.sqrt(2)
+            self.direction.y /= math.sqrt(2)
+            
+        if pygame.mouse.get_pressed() == (1,0,0):
+            self.shoot = True
+            self.is_shooting()
             self.status = 'right'
         else:
-            self.direction.x = 0
+            self.shoot = False
 
+  
+    def check_enemy_collision(self):
+        """Check if enemy is hit by a bullet"""
+        for enemy in self.enemy_sprites:
+            if self.hitbox.colliderect(enemy.hitbox):
+                self.health -= 20  # Reduce enemy health
+                enemy.kill()  # Remove the bullet
+
+                if self.health <= 0:
+                    self.kill()
+                    exit()# Destroy the enemy if health is zero
         # Store last direction when moving
         if self.direction.x != 0 or self.direction.y != 0:
             self.last_direction = self.status
@@ -91,7 +119,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.animations[self.status][int(self.frame_index)]
         else:
             # Idle
-            self.image = self.animations[self.last_direction][0]
+            self.image = self.animations[self.last_direction][0]            
 
     def collision (self, direction):
         if direction == 'horizontal':
@@ -109,12 +137,19 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
-                        
+    
     def is_shooting(self):
+        self.mouse_coords = pygame.mouse.get_pos()
+        self.x_change_mouse_player = self.mouse_coords[0] - WIDTH // 2
+        self.y_change_mouse_player = self.mouse_coords[1] - HEIGHT // 2
+        self.angle = math.degrees(math.atan2(self.y_change_mouse_player, self.x_change_mouse_player))
+        
         if self.shoot_cooldown == 0:
             self.shoot_cooldown = SHOOT_COOLDOWN
             spawn_bullet_pos = self.pos + self.gun_barrel_offset.rotate(self.angle)
-            self.bullet = Bullet(spawn_bullet_pos[0],spawn_bullet_pos[1],self.angle)
+            self.bullet = Bullet(spawn_bullet_pos[0], spawn_bullet_pos[1], self.angle, self.obstacle_sprites)
+            self.bullet_sprites.add(self.bullet)
+            self.visible_sprites.add(self.bullet)
 
     def move(self, speed, x_min, x_max, y_min, y_max):
         if self.direction.magnitude() != 0:
@@ -130,7 +165,8 @@ class Player(pygame.sprite.Sprite):
         self.hitbox.y = max(y_min, min(self.hitbox.y, y_max - self.rect.height))
 
         self.rect.center = self.hitbox.center
-
+        
+        self.pos = pygame.math.Vector2(self.hitbox.center)
     def update(self, *args, **kwargs):
         dialogue_mode = kwargs.get('dialogue_mode', False)
         x_min = kwargs.get('x_min', 0)
@@ -145,6 +181,8 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
             self.direction.y = 0
 
+        self.check_enemy_collision()
+     
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
 

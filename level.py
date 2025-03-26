@@ -16,7 +16,8 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.camera_group = self.visible_sprites
         self.dialogue_active = False
-        self.enemies = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
         self.door_sprites = pygame.sprite.Group()
 
         self.map_path = map_path
@@ -29,8 +30,9 @@ class Level:
     def create_map(self):
         self.visible_sprites.empty()
         self.obstacle_sprites.empty()
-        self.enemies.empty()
+        self.enemy_sprites.empty()
         self.door_sprites.empty()
+        self.bullet_sprites.empty()
 
         for layer in self.tmx_data.objectgroups:
             if layer.name == "Obstacles":
@@ -52,15 +54,16 @@ class Level:
                 door_sprite.y_max = int(obj.properties.get('y_max', self.y_max))
 
             elif obj.name == 'Player':
-                self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites)
+                self.player = Player(pos, [self.visible_sprites], self.obstacle_sprites,self.bullet_sprites,self.enemy_sprites)
 
             elif obj.name == 'NPC':
-                dialogue = obj.properties.get('dialogue', "bitch im a cube lmao|now shoo hoe you stink like ass")
+                dialogue = obj.properties.get('dialogue')
+                asset = obj.properties.get('asset')
                 dialogue_lines = dialogue.split('|')
-                NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, color='pink', dialogue=dialogue_lines)
+                NPC(pos, [self.visible_sprites, self.obstacle_sprites], name=obj.name, image_path=asset, dialogue=dialogue_lines)
 
             elif obj.name == 'Enemy':
-                Enemy(pos, [self.visible_sprites], self.obstacle_sprites, self.player)
+                Enemy(pos, [self.visible_sprites,self.enemy_sprites], self.obstacle_sprites, self.player,self.bullet_sprites)
 
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")

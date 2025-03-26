@@ -11,6 +11,13 @@ class Obstacle(pygame.sprite.Sprite):
             "Stove": "assets/obstacles/Stove.png",
             "Sala Set": "assets/obstacles/Sala Set.png",
             "Book Shelf": "assets/obstacles/Book Shelf.png",
+            "Garbage 1": "assets/obstacles/1Garbage.png",
+            "Garbage 2": "assets/obstacles/2Garbage.png",
+            "Garbage Pile": "assets/obstacles/Garbage Pile (Custom).png",
+            "Garbage Pile 2": "assets/obstacles/Garbage Pile 2.png",
+            "Banana Peel": "assets/obstacles/Banana Peel.png",
+            "Crumpled Paper": "assets/obstacles/Crumpled Paper.png",
+            "House": "assets/obstacles/house (Custom).png",
         }
 
         image_path = obstacle_images.get(name)
