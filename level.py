@@ -131,8 +131,8 @@ class Level:
                                 "Well, good job cleaning those things up, kiddo.",
                                 "...Hm? Have I seen your father?",
                                 "Never heard of your father before today.",
-                                "Did he visit?"
-                                "Ask your mom. Maybe she knows."
+                                "Did he visit?",
+                                "Ask your mom. Maybe she knows.",
                             ]
                             sprite.dialogue = self.npc_dialogue_states["old-man"]
 
