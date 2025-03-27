@@ -1,20 +1,21 @@
-# Paper Townsman
+# Instructions on how to run the game
 
-A 2D adventure game built with Python and Pygame.
+## Without the terminal:
 
-## Installation
+1. After downloading the game files
+2. Run the main.exe file
 
-Ensure you have Python installed on your system (version 3.x recommended).
+## With the terminal
 
-1. Clone this repository if you haven't downloaded the files:
-   ```sh
-   git clone https://github.com/yourusername/paper-townsman.git
-   ```
-2. Navigate to the game directory:
+1. Ensure you have Python installed on your system (version 3.x recommended).
+2. Open a terminal or command prompt.
+3. Navigate to the directory containing the game files
+
    ```sh
    cd paper-townsman
    ```
-3. Install dependencies (if any):
+
+4. Install dependencies (if any):
    ```sh
    pip install -r requirements.txt
    ```
