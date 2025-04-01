@@ -1,4 +1,5 @@
 import pygame
+import random
 import os
 from settings import *
 
@@ -68,11 +69,22 @@ class Enemy(pygame.sprite.Sprite):
             if self.hitbox.colliderect(bullet.rect):
                 self.health -= BULLET_DAMAGE 
                 bullet.kill()
+                
+                # Teleport near the player
+                self.teleport_near_player()
 
                 if self.health <= 0:
                     if hasattr(self.player, "level"):  # Check if player has a reference to Level
                         self.player.level.register_enemy_death(self.enemyID)
                     self.kill()
+    
+    def teleport_near_player(self):
+        mid_x = (self.rect.centerx + self.player.rect.centerx) // 2
+        mid_y = (self.rect.centery + self.player.rect.centery) // 2
+
+        self.rect.center = (mid_x, mid_y)
+        self.hitbox.center = self.rect.center  # Keep hitbox aligned
+
 
     def collision(self, direction):
         for sprite in self.obstacle_sprites:

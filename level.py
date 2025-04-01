@@ -8,6 +8,7 @@ from obstacle import Obstacle
 import pytmx
 from pytmx.util_pygame import load_pygame
 from enemy import Enemy
+from fastenemy import FastEnemy
 from npc_details import NPC_DETAILS
 
 class Level:
@@ -79,10 +80,14 @@ class Level:
 
             elif obj.name == 'Enemy':
                 enemyID = obj.properties.get('enemyID')
+                enemyType = obj.properties.get('enemyType', 'normal')
 
                 # Check if enemyID is in self.enemy_states (already defeated)
                 if enemyID not in self.enemy_states:
-                    Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+                    if enemyType == 'fast':
+                        FastEnemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+                    else:
+                        Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
         
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
