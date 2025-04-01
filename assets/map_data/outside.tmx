@@ -31,7 +31,7 @@
     <property name="character" value="old-man"/>
    </properties>
   </object>
-  <object id="105" name="Enemy" x="1080" y="1305.33">
+  <object id="105" name="Enemy2" x="1080" y="1305.33">
    <properties>
     <property name="enemyID" type="int" value="93478"/>
    </properties>

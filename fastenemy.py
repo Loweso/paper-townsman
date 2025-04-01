@@ -9,7 +9,7 @@ class FastEnemy(Enemy):
         self.base_speed = 4  
         self.speed = self.base_speed
         self.health = ENEMY_HEALTH + 20
-        self.load_images("assets/enemy/fast/")  
+        self.load_images("assets/enemy2/")  
 
     def check_bullet_collision(self):
         for bullet in self.bullet_sprites:
@@ -32,4 +32,4 @@ class FastEnemy(Enemy):
         mid_y = (self.rect.centery + self.player.rect.centery) // 2
 
         self.rect.center = (mid_x, mid_y)
-        self.hitbox.center = self.rect.center  # Keep hitbox aligned
+        self.hitbox.center = self.rect.center

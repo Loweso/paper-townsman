@@ -80,14 +80,11 @@ class Level:
 
             elif obj.name == 'Enemy':
                 enemyID = obj.properties.get('enemyID')
-                enemyType = obj.properties.get('enemyType', 'normal')
+                Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
 
-                # Check if enemyID is in self.enemy_states (already defeated)
-                if enemyID not in self.enemy_states:
-                    if enemyType == 'fast':
-                        FastEnemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
-                    else:
-                        Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+            elif obj.name == 'Enemy2':
+                enemyID = obj.properties.get('enemyID')
+                FastEnemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
         
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
