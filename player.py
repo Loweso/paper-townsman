@@ -118,6 +118,10 @@ class Player(pygame.sprite.Sprite):
         for enemy in self.enemy_sprites:
             if self.hitbox.colliderect(enemy.hitbox):
                 self.health -= 20  # Reduce enemy health
+
+                if hasattr(self, "level"):  # Check if player has a reference to Level
+                    self.level.register_enemy_death(enemy.enemyID)
+
                 enemy.kill()  # Remove the bullet
 
                 if self.health <= 0:

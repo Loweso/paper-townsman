@@ -31,7 +31,7 @@ class Level:
 
         # For plot progression purposes
         self.npc_dialogue_states = {}
-        self.enemy_states = {}
+        self.enemy_states = []
 
         self.create_map()
 
@@ -80,11 +80,15 @@ class Level:
 
             elif obj.name == 'Enemy':
                 enemyID = obj.properties.get('enemyID')
-                Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+
+                if enemyID not in self.enemy_states:
+                    Enemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
 
             elif obj.name == 'Enemy2':
                 enemyID = obj.properties.get('enemyID')
-                FastEnemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
+                
+                if enemyID not in self.enemy_states:
+                    FastEnemy(pos, [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites, self.player, self.bullet_sprites, enemyID=enemyID)
         
         if not hasattr(self, 'player'):
             print("[WARNING] Player object not found in map! Adding default at (0,0)")
@@ -209,7 +213,7 @@ class Level:
                 self.x_max, self.y_max = door.x_max, door.y_max
 
     def register_enemy_death(self, enemyID):
-        self.enemy_states[enemyID] = True
+        self.enemy_states.append(enemyID)
 
     def load_new_world(self, map_path):
         self.map_path = map_path

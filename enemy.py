@@ -72,7 +72,9 @@ class Enemy(pygame.sprite.Sprite):
 
                 if self.health <= 0:
                     if hasattr(self.player, "level"):  # Check if player has a reference to Level
+                        print("I'm here!")
                         self.player.level.register_enemy_death(self.enemyID)
+                    print("Now I'm dead!")
                     self.kill()
 
     def collision(self, direction):
