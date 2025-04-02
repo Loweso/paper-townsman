@@ -136,9 +136,9 @@ class Enemy(pygame.sprite.Sprite):
 
         for _ in range(10):  # Try 10 random positions
             teleport_distance = random.randint(min_distance, max_distance)
-            angle = random.uniform(0, 2 * math.pi)  # ✅ Use math.pi instead of 3.14159
+            angle = random.uniform(0, 2 * math.pi)  # Use math.pi instead of 3.14159
 
-            # ✅ Use math.cos() and math.sin() correctly
+            #  Use math.cos() and math.sin() correctly
             offset_x = teleport_distance * math.cos(angle)
             offset_y = teleport_distance * math.sin(angle)
             new_pos = pygame.math.Vector2(self.player.rect.center) + pygame.math.Vector2(offset_x, offset_y)
