@@ -1,6 +1,7 @@
 import pygame
 import random
 import os
+import math
 from settings import *
 from math import atan2, degrees
 
@@ -126,35 +127,42 @@ class Enemy(pygame.sprite.Sprite):
                 self.wandering_time = current_time
 
     def attempt_teleport(self):
-        """Teleport to a random position near the player, avoiding obstacles"""
         current_time = pygame.time.get_ticks()
         if current_time - self.last_teleport_time < self.teleport_delay:
             return
-            
-        # Try to find a valid position near player
+
+        min_distance = 150  # Minimum teleport distance
+        max_distance = 200  # Maximum teleport distance
+
         for _ in range(10):  # Try 10 random positions
-            offset = pygame.math.Vector2(random.randint(-150, 150), random.randint(-150, 150))
-            new_pos = self.player.rect.center + offset
-            
+            teleport_distance = random.randint(min_distance, max_distance)
+            angle = random.uniform(0, 2 * math.pi)  # ✅ Use math.pi instead of 3.14159
+
+            # ✅ Use math.cos() and math.sin() correctly
+            offset_x = teleport_distance * math.cos(angle)
+            offset_y = teleport_distance * math.sin(angle)
+            new_pos = pygame.math.Vector2(self.player.rect.center) + pygame.math.Vector2(offset_x, offset_y)
+
             # Create temp rect to check collisions
             temp_rect = self.rect.copy()
             temp_rect.center = new_pos
             temp_hitbox = self.hitbox.copy()
             temp_hitbox.center = new_pos
-            
+
             # Check if position is valid (not in obstacle)
             valid_position = True
             for sprite in self.obstacle_sprites:
                 if temp_hitbox.colliderect(sprite.hitbox):
                     valid_position = False
                     break
-                    
+
             if valid_position:
                 self.rect.center = new_pos
                 self.hitbox.center = new_pos
                 self.last_teleport_time = current_time
                 self.state = "teleporting"
-                return
+                return  # Successfully teleported
+
 
     def move(self):
         current_time = pygame.time.get_ticks()
