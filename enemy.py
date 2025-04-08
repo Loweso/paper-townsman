@@ -102,29 +102,47 @@ class Enemy(pygame.sprite.Sprite):
         return True
 
     def decide_state(self):
-        current_time = pygame.time.get_ticks()
-        distance_to_player = pygame.math.Vector2(self.player.rect.center).distance_to(self.rect.center)
-        
-        # Update has_detected_player if player is within agro radius
-        if distance_to_player <= self.agro_radius or self.has_detected_player:
-            self.has_detected_player = True
+        best_action = self.get_best_action()
+        if best_action == "chase":
             self.state = "chasing"
-            
-            # Chance to teleport when chasing
-            if (current_time - self.last_teleport_time > self.teleport_delay and 
-                random.random() < 0.02 and distance_to_player > 100):
-                self.attempt_teleport()
-        elif self.state == "chasing" and distance_to_player > self.agro_radius * 1.5:
-            # Lost player, return to wandering
+        elif best_action == "wander":
             self.state = "wandering"
-            self.has_detected_player = False
-        elif self.state == "wandering":
-            # Random direction changes while wandering
-            if current_time - self.wandering_time > 2000:
-                self.wandering_direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
-                if self.wandering_direction.length() > 0:
-                    self.wandering_direction = self.wandering_direction.normalize()
-                self.wandering_time = current_time
+        elif best_action == "teleport":
+            self.attempt_teleport()
+
+    def get_best_action(self):
+        alpha = float('-inf')
+        beta = float('inf')
+        _, action = self.alpha_beta(self.rect.center, self.player.rect.center, 2, True, alpha, beta)
+        return action
+
+    def alpha_beta(self, enemy_pos, player_pos, depth, maximizing, alpha, beta):
+        if depth == 0:
+            return self.evaluate_state(enemy_pos, player_pos), None
+
+        if maximizing:
+            max_eval = float('-inf')
+            best_action = None
+            for action in ["chase", "wander", "teleport"]:
+                new_pos = self.simulate_action(enemy_pos, action)
+                eval, _ = self.alpha_beta(new_pos, player_pos, depth - 1, False, alpha, beta)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_action = action
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+            return max_eval, best_action
+        else:
+            # Minimize player success (simulate player escaping)
+            min_eval = float('inf')
+            for player_move in self.simulate_player_moves(player_pos):
+                eval, _ = self.alpha_beta(enemy_pos, player_move, depth - 1, True, alpha, beta)
+                min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+            return min_eval, None
 
     def attempt_teleport(self):
         current_time = pygame.time.get_ticks()
