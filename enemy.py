@@ -143,6 +143,31 @@ class Enemy(pygame.sprite.Sprite):
                 if beta <= alpha:
                     break
             return min_eval, None
+        
+    def evaluate_state(self, enemy_pos, player_pos):
+        dist = pygame.math.Vector2(enemy_pos).distance_to(player_pos)
+        return -dist  # Closer is better (chase)
+    
+    def simulate_action(self, pos, action):
+        pos = pygame.math.Vector2(pos)
+        if action == "chase":
+            direction = (pygame.math.Vector2(self.player.rect.center) - pos).normalize()
+            return pos + direction * self.speed
+        elif action == "wander":
+            angle = random.uniform(0, 2 * math.pi)
+            direction = pygame.math.Vector2(math.cos(angle), math.sin(angle))
+            return pos + direction * self.speed
+        elif action == "teleport":
+            offset = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize() * 150
+            return pos + offset
+
+    def simulate_player_moves(self, player_pos):
+        directions = [
+            pygame.math.Vector2(1, 0), pygame.math.Vector2(-1, 0),
+            pygame.math.Vector2(0, 1), pygame.math.Vector2(0, -1)
+        ]
+        return [pygame.math.Vector2(player_pos) + d * self.player_velocity.length() for d in directions]
+
 
     def attempt_teleport(self):
         current_time = pygame.time.get_ticks()
